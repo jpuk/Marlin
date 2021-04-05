@@ -86,9 +86,8 @@
     #define Z_DRIVER_TYPE  TMC2209
     #define E0_DRIVER_TYPE TMC2209
     #define E1_DRIVER_TYPE TMC2209
-    #define RUNOUT           // Enable filament runout sensor - Only If you have them
+    //#define RUNOUT           // Enable filament runout sensor - Only If you have them
     #define BEDCLIPS         // Enable to avoid bed clips (manual or probe) - Only If you have them and want to use them
-
     #define TMCCHIPS
   #endif
 
@@ -107,7 +106,7 @@
 
 //Bed clip logic - use mesh inset or min probe edge to avoid clips not both
 #if ENABLED (BEDCLIPS)
-  #define MESH_INSET 10   // Move mesh in #mm from edge
+  #define MESH_INSET 20   // Move mesh in #mm from edge
   //Set per side
   //#define MESH_MIN_X MESH_INSET
   //#define MESH_MIN_Y MESH_INSET
@@ -467,7 +466,7 @@
  *   998 : Dummy Table that ALWAYS reads 25°C or the temperature defined below.
  *   999 : Dummy Table that ALWAYS reads 100°C or the temperature defined below.
  */
-#define TEMP_SENSOR_0 1
+#define TEMP_SENSOR_0 5
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
@@ -475,7 +474,7 @@
 #define TEMP_SENSOR_5 0
 #define TEMP_SENSOR_6 0
 #define TEMP_SENSOR_7 0
-#define TEMP_SENSOR_BED 0
+#define TEMP_SENSOR_BED 1
 #define TEMP_SENSOR_PROBE 0
 #define TEMP_SENSOR_CHAMBER 0
 
@@ -492,7 +491,7 @@
 // Use temp sensor 1 as a redundant sensor with sensor 0. If the readings
 // from the two sensors differ too much the print will be aborted.
 //#define TEMP_SENSOR_1_AS_REDUNDANT
-#define MAX_REDUNDANT_TEMP_SENSOR_DIFF 5
+#define MAX_REDUNDANT_TEMP_SENSOR_DIFF 10
 
 #define TEMP_RESIDENCY_TIME     5  // (seconds) Time to wait for hotend to "settle" in M109
 #define TEMP_WINDOW              1  // (°C) Temperature proximity for the "temperature reached" timer
@@ -914,7 +913,8 @@
 //#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 
 // Force the use of the probe for Z-axis homing
-//#define USE_PROBE_FOR_Z_HOMING
+//
+#define USE_PROBE_FOR_Z_HOMING
 
 /**
  * Z_MIN_PROBE_PIN
@@ -969,6 +969,8 @@
 /**
  * The BLTouch probe uses a Hall effect sensor and emulates a servo.
  */
+//#define SERVO0_PIN 2
+//#define Z_MIN_PROBE_PIN 0_10
 #define BLTOUCH
 
 /**
@@ -1461,7 +1463,7 @@
 // - Move the Z probe (or nozzle) to a defined XY point before Z Homing.
 // - Prevent Z homing when the Z probe is outside bed area.
 //
-//#define Z_SAFE_HOMING
+#define Z_SAFE_HOMING
 
 #if ENABLED(Z_SAFE_HOMING)
   #define Z_SAFE_HOMING_X_POINT X_CENTER  // X point for Z homing
