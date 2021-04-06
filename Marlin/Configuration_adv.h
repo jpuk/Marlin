@@ -653,10 +653,10 @@
 
 //#define SENSORLESS_BACKOFF_MM  { 2, 2 }     // (mm) Backoff from endstops before sensorless homing
 
-#define HOMING_BUMP_MM      { 0, 0, 2 }       // (mm) Backoff from endstops after first bump
+#define HOMING_BUMP_MM      { 0, 0, 0 }       // (mm) Backoff from endstops after first bump
 #define HOMING_BUMP_DIVISOR { 2, 2, 4 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate)
 
-#define HOMING_BACKOFF_POST_MM { 5, 2, 2 }  // (mm) Backoff from endstops after homing
+#define HOMING_BACKOFF_POST_MM { 5, 5, 0 }  // (mm) Backoff from endstops after homing
 
 //#define QUICK_HOME                          // If G28 contains XY do a diagonal move first
 //#define HOME_Y_BEFORE_X                     // If G28 contains XY home Y before X
@@ -798,8 +798,8 @@
 #if ENABLED(ASSISTED_TRAMMING)
 
   // Define positions for probing points, use the hotend as reference not the sensor.
-  #define TRAMMING_POINT_XY { {  20, 20 }, { 200,  20 }, { 200, 200 }, { 20, 200 } }
-
+  //#define TRAMMING_POINT_XY { {  20, 20 }, { 200,  20 }, { 200, 200 }, { 20, 200 } }
+  #define TRAMMING_POINT_XY { { 40, 40 }, { X_BED_SIZE-40, 40 }, { X_BED_SIZE-40, Y_BED_SIZE-40 }, { 40, Y_BED_SIZE-40 } }
   // Define positions names for probing points.
   #define TRAMMING_POINT_NAME_1 "Front-Left"
   #define TRAMMING_POINT_NAME_2 "Front-Right"
@@ -1078,6 +1078,7 @@
     #define PROBE_OFFSET_WIZARD
     #if ENABLED(PROBE_OFFSET_WIZARD)
       #define PROBE_OFFSET_START -4.0   // Estimated nozzle-to-probe Z offset, plus a little extra
+      //#define PROBE_OFFSET_WIZARD_XY_POS { X_CENTER, Y_CENTER }
     #endif
   #endif
 
@@ -1088,7 +1089,7 @@
   #endif
 
   // BACK menu items keep the highlight at the top
-  //#define TURBO_BACK_MENU_ITEM
+  #define TURBO_BACK_MENU_ITEM
 
   /**
    * LED Control Menu
@@ -1119,17 +1120,18 @@
 #endif // HAS_LCD_MENU
 
 // Scroll a longer status message into view
-//#define STATUS_MESSAGE_SCROLLING
+#define STATUS_MESSAGE_SCROLLING
 
 // On the Info Screen, display XY with one decimal place when possible
 //#define LCD_DECIMAL_SMALL_XY
 
 // The timeout (in ms) to return to the status screen from sub-menus
 //#define LCD_TIMEOUT_TO_STATUS 15000
-
+#define PROGRESSINFO
+#if ENABLED (PROGRESSINFO)
 // Add an 'M73' G-code to set the current percentage
-//#define LCD_SET_PROGRESS_MANUALLY
-
+  #define LCD_SET_PROGRESS_MANUALLY
+#endif
 // Show the E position (filament used) during printing
 //#define LCD_SHOW_E_TOTAL
 
@@ -1138,10 +1140,10 @@
 #endif
 
 #if EITHER(SDSUPPORT, LCD_SET_PROGRESS_MANUALLY) && ANY(HAS_MARLINUI_U8GLIB, HAS_MARLINUI_HD44780, IS_TFTGLCD_PANEL)
-  //#define SHOW_REMAINING_TIME       // Display estimated time to completion
+  #define SHOW_REMAINING_TIME       // Display estimated time to completion
   #if ENABLED(SHOW_REMAINING_TIME)
-    //#define USE_M73_REMAINING_TIME  // Use remaining time from M73 command instead of estimation
-    //#define ROTATE_PROGRESS_DISPLAY // Display (P)rogress, (E)lapsed, and (R)emaining time
+    #define USE_M73_REMAINING_TIME  // Use remaining time from M73 command instead of estimation
+    #define ROTATE_PROGRESS_DISPLAY // Display (P)rogress, (E)lapsed, and (R)emaining time
   #endif
 
   #if HAS_MARLINUI_U8GLIB
@@ -1271,7 +1273,7 @@
    * On print completion the LCD Menu will open with the file selected.
    * You can just click to start the print, or navigate elsewhere.
    */
-  //#define SD_REPRINT_LAST_SELECTED_FILE
+  #define SD_REPRINT_LAST_SELECTED_FILE
 
   /**
    * Auto-report SdCard status with M27 S<seconds>
@@ -1603,20 +1605,20 @@
  *
  * Warning: Does not respect endstops!
  */
-//#define BABYSTEPPING
+#define BABYSTEPPING
 #if ENABLED(BABYSTEPPING)
   //#define INTEGRATED_BABYSTEPPING         // EXPERIMENTAL integration of babystepping into the Stepper ISR
   //#define BABYSTEP_WITHOUT_HOMING
-  //#define BABYSTEP_ALWAYS_AVAILABLE       // Allow babystepping at all times (not just during movement).
+  #define BABYSTEP_ALWAYS_AVAILABLE       // Allow babystepping at all times (not just during movement).
   //#define BABYSTEP_XY                     // Also enable X/Y Babystepping. Not supported on DELTA!
   #define BABYSTEP_INVERT_Z false           // Change if Z babysteps should go the other way
-  //#define BABYSTEP_MILLIMETER_UNITS       // Specify BABYSTEP_MULTIPLICATOR_(XY|Z) in mm instead of micro-steps
-  #define BABYSTEP_MULTIPLICATOR_Z  1       // (steps or mm) Steps or millimeter distance for each Z babystep
+  #define BABYSTEP_MILLIMETER_UNITS       // Specify BABYSTEP_MULTIPLICATOR_(XY|Z) in mm instead of micro-steps
+  #define BABYSTEP_MULTIPLICATOR_Z  0.01       // (steps or mm) Steps or millimeter distance for each Z babystep
   #define BABYSTEP_MULTIPLICATOR_XY 1       // (steps or mm) Steps or millimeter distance for each XY babystep
 
-  //#define DOUBLECLICK_FOR_Z_BABYSTEPPING  // Double-click on the Status Screen for Z Babystepping.
+  #define DOUBLECLICK_FOR_Z_BABYSTEPPING  // Double-click on the Status Screen for Z Babystepping.
   #if ENABLED(DOUBLECLICK_FOR_Z_BABYSTEPPING)
-    #define DOUBLECLICK_MAX_INTERVAL 1250   // Maximum interval between clicks, in milliseconds.
+    #define DOUBLECLICK_MAX_INTERVAL 2000   // Maximum interval between clicks, in milliseconds.
                                             // Note: Extra time may be added to mitigate controller latency.
     //#define MOVE_Z_WHEN_IDLE              // Jump to the move Z menu on doubleclick when printer is idle.
     #if ENABLED(MOVE_Z_WHEN_IDLE)
@@ -1626,7 +1628,7 @@
 
   //#define BABYSTEP_DISPLAY_TOTAL          // Display total babysteps since last G28
 
-  //#define BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
+  #define BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
   #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
     //#define BABYSTEP_HOTEND_Z_OFFSET      // For multiple hotends, babystep relative Z offsets
     //#define BABYSTEP_ZPROBE_GFX_OVERLAY   // Enable graphical overlay on Z-offset editor
@@ -2328,14 +2330,14 @@
   #endif
 
   #if AXIS_IS_TMC(E0)
-    #define E0_CURRENT      707
+    #define E0_CURRENT      800
     #define E0_MICROSTEPS    16
     #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
   #endif
 
   #if AXIS_IS_TMC(E1)
-    #define E1_CURRENT      707
+    #define E1_CURRENT      800
     #define E1_MICROSTEPS    16
     #define E1_RSENSE         0.11
     #define E1_CHAIN_POS     -1
@@ -3210,7 +3212,12 @@
  * Execute certain G-code commands immediately after power-on.
  */
 //#define STARTUP_COMMANDS "M17 Z"
-
+#if ENABLED (MIX)
+// Full Set of 8 Vtools for mix
+  #define STARTUP_COMMANDS "M163 S0 P0\nM163 S1 P1\nM164 S1\nM163 S0 P0.50\nM163 S1 P0.50\nM164 S2\nM163 S0 P0.75\nM163 S1 P0.25\nM164 S3\nM163 S0 P0.25\nM163 S1 P0.75\nM164 S4\nM163 S0 P0.33\nM163 S1 P0.67\nM164 S5\nM163 S0 P0.67\nM163 S1 P0.33\nM164 S6\nM163 S0 P0.60\nM163 S1 P0.40\nM164 S7\nM163 S0 P1\nM163 S1 P0\nM164 S0"
+  #else
+  //#define STARTUP_COMMANDS ""
+#endif
 /**
  * G-code Macros
  *
@@ -3226,27 +3233,90 @@
 /**
  * User-defined menu items that execute custom GCode
  */
-//#define CUSTOM_USER_MENUS
+#define CUSTOM_USER_MENUS
 #if ENABLED(CUSTOM_USER_MENUS)
   //#define CUSTOM_USER_MENU_TITLE "Custom Commands"
   #define USER_SCRIPT_DONE "M117 User Script Done"
   #define USER_SCRIPT_AUDIBLE_FEEDBACK
   //#define USER_SCRIPT_RETURN  // Return to status screen after a script
 
-  #define USER_DESC_1 "Home & UBL Info"
-  #define USER_GCODE_1 "G28\nG29 W"
+  #define USER_DESC_22 "Home & UBL Info"
+  #define USER_GCODE_22 "G28\nG29 W"
 
-  #define USER_DESC_2 "Preheat for " PREHEAT_1_LABEL
-  #define USER_GCODE_2 "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
+  #define USER_DESC_23 "Preheat for " PREHEAT_1_LABEL
+  #define USER_GCODE_23 "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
 
-  #define USER_DESC_3 "Preheat for " PREHEAT_2_LABEL
-  #define USER_GCODE_3 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
+  #define USER_DESC_24 "Preheat for " PREHEAT_2_LABEL
+  #define USER_GCODE_24 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
 
-  #define USER_DESC_4 "Heat Bed/Home/Level"
-  #define USER_GCODE_4 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nG28\nG29"
+  #define USER_DESC_25 "Heat Bed/Home/Level"
+  #define USER_GCODE_25 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nG28\nG29"
 
-  #define USER_DESC_5 "Home & Info"
-  #define USER_GCODE_5 "G28\nM503"
+  #define USER_DESC_26 "Home & Info"
+  #define USER_GCODE_26 "G28\nM503"
+  #define USER_DESC_1 "Probe UBL Slot 0" //Use probe to setup UBL.
+  #define USER_GCODE_1 "G28\nM190 S65\nG29 P1\nG29 P3\nG29 S0\nG29 A\nG29 F 10.0\nM500\nM140 S0\nM0 Mesh Saved in Slot 0"
+
+  #define USER_DESC_2 "Probe UBL Slot 1" //Use probe to setup UBL.
+  #define USER_GCODE_2 "G28\nM190 S65\nG29 P1\nG29 P3\nG29 S1\nG29 A\nG29 F 10.0\nM500\nM140 S0\nM0 Mesh Saved in Slot 1"
+
+  #define USER_DESC_3 "Probe UBL Slot 2" //Use probe to setup UBL.
+  #define USER_GCODE_3 "G28\nM190 S65\nG29 P1\nG29 P3\nG29 S2\nG29 A\nG29 F 10.0\nM500\nM140 S0\nM0 Mesh Saved in Slot 2"
+
+  #define USER_DESC_4 "Manual UBL Slot 0" //Use nozzle & paper to setup UBL
+  #define USER_GCODE_4 "G28\nG29 P4\nG29 S0\nG29 A\nG29 F 10.0\nM500\nM0 Mesh Saved Slot 0"
+
+  #define USER_DESC_5 "Manual UBL Slot 1" //Use nozzle & paper to setup UBL
+  #define USER_GCODE_5 "G28\nG29 P4\nG29 S1\nG29 A\nG29 F 10.0\nM500\nM0 Mesh Saved Slot 1"
+
+  #define USER_DESC_6 "Manual UBL slot 2" //Use nozzle & paper to setup UBL
+  #define USER_GCODE_6 "G28\nG29 P4\nG29 S2\nG29 A\nG29 F 10.0\nM500\nM0 Mesh Saved Slot 2"
+
+  #define USER_DESC_7 "Adjust Point Near" //Adjust nearest mesh point
+  #define USER_GCODE_7 "G29 P4 R1\nM500"
+
+  #define USER_DESC_8 "Mesh Tilt" //Tilt mesh to account for changes of knobs under the bed
+  #define USER_GCODE_8 "G29 J2\nM500"
+  
+  #define USER_DESC_9 "PIDtune Hotend"
+  #define USER_GCODE_9 "M303 U1 E0 S250 C8\nM500"
+
+  #define USER_DESC_10 "PIDtune Bed"
+  #define USER_GCODE_10 "M303 U1 E-1 S90 C8\nM500"
+
+  #define USER_DESC_11 "Unconditional Stop"
+  #define USER_GCODE_11 "M0"
+
+  #define USER_DESC_12 "Park Toolhead"
+  #define USER_GCODE_12 "G27"
+
+  #define USER_DESC_13 "Emergency Stop"
+  #define USER_GCODE_13 "M112"
+
+  #define USER_DESC_14 "Show SDPrint Name"
+  #define USER_GCODE_14 "M27 C"
+
+  #define USER_DESC_15 "Cold Extrude On"
+  #define USER_GCODE_15 "M302 P0"
+
+  #define USER_DESC_16 "Cold Extrude Off"
+  #define USER_GCODE_16 "M302 P1"
+
+  #define USER_DESC_17 "Dwell 30S"
+  #define USER_GCODE_17 "G4 S30"
+  
+  #define USER_DESC_18 "Zero Z Offset"
+  #define USER_GCODE_18 "M851 Z0.00\nM500\nM117 Z Probe Offset Zeroed\nG4 S3\nM0 Click to continue"
+
+  #define USER_DESC_19 "Auto Cold Pull"
+  #define USER_GCODE_19 "G28\nM83\nG92 E0.00\nG21\nG1 X125 Y105 Z30\nM109 S250\nG1 E10.00 F6.5\nM109 S95\nM18 E\nM0 Pull your filament out\nM106 S0\nM109 S0"
+
+  #define USER_DESC_20 "Nozzle Change"
+  #define USER_GCODE_20 "M104 S275\nM117 Setting Nozzle to 275C\nG4 s3\nM0 Click to continue"
+  
+  #define USER_DESC_21 "Reset EEPROM"
+  #define USER_GCODE_21 "M502\nM500\nM500\nM117 EEPROM values restored\nG4 S3\nM0 Click to continue"
+
 #endif
 
 /**
