@@ -79,16 +79,28 @@
   #if ENABLED (GTA10M_CUSTOM)
     #define GTA10
     #define TOUCHPROBE  // Enable Touch Type Probe (Bltouch / 3Dtouch)
-    #define MIX      // Enable Mixing     2 in 1 - 1 Virtual Extruder
-    #define MULTIEXTRUDER 
+    // This defines the number of extruders
+    // :[0, 1, 2, 3, 4, 5, 6, 7, 8]
+    // if using MIX then set extruders to 1
+    //#define MULTIEXTRUDER 
+    //#define EXTRUDERS 1
+    //#define MIX      // Enable Mixing     2 in 1 - 1 Virtual Extruder
+    // when using e3d cyclops use extruders 2 and SINGLENOZZLE rather than MIX
+    #define EXTRUDERS 2
+    // For Cyclops or any "multi-extruder" that shares a single nozzle.
+    #define SINGLENOZZLE
+    // Generally expected filament diameter (1.75, 2.85, 3.0, ...). Used for Volumetric, Filament Width Sensor, etc.
+    #define DEFAULT_NOMINAL_FILAMENT_DIA 1.75
+
     #define X_DRIVER_TYPE  TMC2209
     #define Y_DRIVER_TYPE  TMC2209
     #define Z_DRIVER_TYPE  TMC2209
     #define E0_DRIVER_TYPE TMC2209
     #define E1_DRIVER_TYPE TMC2209
     //#define RUNOUT           // Enable filament runout sensor - Only If you have them
-    //#define BEDCLIPS         // Enable to avoid bed clips (manual or probe) - Only If you have them and want to use them
+    #define BEDCLIPS         // Enable to avoid bed clips (manual or probe) - Only If you have them and want to use them
     #define TMCCHIPS
+    //#define MESH_INSET 25
   #endif
 
 //#define PLR              // Enabled power loss resume - Only functions from SDcard
@@ -106,7 +118,7 @@
 
 //Bed clip logic - use mesh inset or min probe edge to avoid clips not both
 #if ENABLED (BEDCLIPS)
-  #define MESH_INSET 20   // Move mesh in #mm from edge
+  #define MESH_INSET 35   // Move mesh in #mm from edge
   //Set per side
   //#define MESH_MIN_X MESH_INSET
   //#define MESH_MIN_Y MESH_INSET
@@ -187,15 +199,7 @@
 
 // @section extruder
 
-// This defines the number of extruders
-// :[0, 1, 2, 3, 4, 5, 6, 7, 8]
-#define EXTRUDERS 1
 
-// Generally expected filament diameter (1.75, 2.85, 3.0, ...). Used for Volumetric, Filament Width Sensor, etc.
-#define DEFAULT_NOMINAL_FILAMENT_DIA 1.75
-
-// For Cyclops or any "multi-extruder" that shares a single nozzle.
-//#define SINGLENOZZLE
 
 // Save and restore temperature and fan speed on tool-change.
 // Set standby for the unselected tool with M104/106/109 T...
@@ -466,7 +470,7 @@
  *   998 : Dummy Table that ALWAYS reads 25°C or the temperature defined below.
  *   999 : Dummy Table that ALWAYS reads 100°C or the temperature defined below.
  */
-#define TEMP_SENSOR_0 5
+#define TEMP_SENSOR_0 5  // both geeetech mixing hotend and e3d cyclops use type 5
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
@@ -517,7 +521,7 @@
 // Above this temperature the heater will be switched off.
 // This can protect components from overheating, but NOT from shorts and failures.
 // (Use MINTEMP for thermistor short/failure protection.)
-#define MAXTEMPALL 275
+#define MAXTEMPALL 300
 #define HEATER_0_MAXTEMP MAXTEMPALL
 #define HEATER_1_MAXTEMP MAXTEMPALL
 #define HEATER_2_MAXTEMP MAXTEMPALL
@@ -802,7 +806,8 @@
  */
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 500 }
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 430 } // geeetech titan clones
-#define DEFAULT_AXIS_STEPS_PER_UNIT { 80, 80, 400, 409 } // e3d hemera
+//#define DEFAULT_AXIS_STEPS_PER_UNIT { 79.56, 79.8, 402.21, 409 } // e3d hemera default and tuning to x, y and z based on my printer
+#define DEFAULT_AXIS_STEPS_PER_UNIT { 160, 160, 800, 409 } // e3d hemera default with upgraded 0.9 degree per step motors on x, y and z.
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -825,8 +830,8 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 500, 500, 100, 5000 }
-//#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 200, 10000 }
+//#define DEFAULT_MAX_ACCELERATION      { 500, 500, 100, 5000 }
+#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 200, 10000 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -846,9 +851,9 @@
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
 #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
 */
-#define DEFAULT_ACCELERATION          500    // X, Y, Z and E acceleration for printing moves
-#define DEFAULT_RETRACT_ACCELERATION  500    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   500    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_ACCELERATION          3000    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_RETRACT_ACCELERATION  5000    // E acceleration for retracts
+#define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Default Jerk limits (mm/s)
@@ -1060,14 +1065,15 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { -40, 0, 0 }
+//#define NOZZLE_TO_PROBE_OFFSET { -45, -18, 0 }
+#define NOZZLE_TO_PROBE_OFFSET { -15, -45, 0 }
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
-#define PROBING_MARGIN 10
+#define PROBING_MARGIN 35
 
 // X and Y axis travel speed (mm/min) between probes
-#define XY_PROBE_SPEED (10*60)//(133*60)
+#define XY_PROBE_SPEED (133*60)//(10*60)
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
 #define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z
@@ -1084,7 +1090,7 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-#define MULTIPLE_PROBING 3
+#define MULTIPLE_PROBING 2
 //#define EXTRA_PROBING    1
 
 /**
@@ -1109,8 +1115,8 @@
 #define Z_PROBE_LOW_POINT          -5 // Farthest distance below the trigger-point to go before stopping
 
 // For M851 give a range for adjusting the Z probe offset
-#define Z_PROBE_OFFSET_RANGE_MIN -20
-#define Z_PROBE_OFFSET_RANGE_MAX 20
+#define Z_PROBE_OFFSET_RANGE_MIN -25
+#define Z_PROBE_OFFSET_RANGE_MAX 25
 
 // Enable the M48 repeatability test to test probe accuracy
 #define Z_MIN_PROBE_REPEATABILITY_TEST
@@ -1672,7 +1678,7 @@
  *   Caveats: The ending Z should be the same as starting Z.
  * Attention: EXPERIMENTAL. G-code arguments may change.
  */
-#define NOZZLE_CLEAN_FEATURE
+//#define NOZZLE_CLEAN_FEATURE
 
 #if ENABLED(NOZZLE_CLEAN_FEATURE)
   // Default number of pattern repetitions
@@ -2464,7 +2470,7 @@
   #define NEOPIXEL_PIN     P1_24       // LED driving pin
   //#define NEOPIXEL2_TYPE NEOPIXEL_TYPE
   //#define NEOPIXEL2_PIN    5
-  #define NEOPIXEL_PIXELS 12      // Number of LEDs in the strip. (Longest strip when NEOPIXEL2_SEPARATE is disabled.)
+  #define NEOPIXEL_PIXELS 13      // Number of LEDs in the strip. (Longest strip when NEOPIXEL2_SEPARATE is disabled.)
   #define NEOPIXEL_IS_SEQUENTIAL   // Sequential display for temperature change - LED by LED. Disable to change all LEDs at once.
   #define NEOPIXEL_BRIGHTNESS 127  // Initial brightness (0-255)
   #define NEOPIXEL_STARTUP_TEST  // Cycle through colors at startup
