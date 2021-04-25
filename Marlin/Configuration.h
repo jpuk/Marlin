@@ -797,7 +797,7 @@
  * following movement settings. If fewer factors are given than the
  * total number of extruders, the last value applies to the rest.
  */
-//#define DISTINCT_E_FACTORS
+#define DISTINCT_E_FACTORS
 
 /**
  * Default Axis Steps Per Unit (steps/mm)
@@ -807,7 +807,7 @@
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 4000, 500 }
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 430 } // geeetech titan clones
 //#define DEFAULT_AXIS_STEPS_PER_UNIT { 79.56, 79.8, 402.21, 409 } // e3d hemera default and tuning to x, y and z based on my printer
-#define DEFAULT_AXIS_STEPS_PER_UNIT { 160, 160, 800, 409 } // e3d hemera default with upgraded 0.9 degree per step motors on x, y and z.
+#define DEFAULT_AXIS_STEPS_PER_UNIT { 160, 160, 800, 409, 409 } // e3d hemera default with upgraded 0.9 degree per step motors on x, y and z.
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -830,8 +830,8 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-//#define DEFAULT_MAX_ACCELERATION      { 500, 500, 100, 5000 }
-#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 200, 10000 }
+#define DEFAULT_MAX_ACCELERATION      { 500, 500, 100, 5000 }
+//#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 200, 10000 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -1066,11 +1066,11 @@
  *     O-- FRONT --+
  */
 //#define NOZZLE_TO_PROBE_OFFSET { -45, -18, 0 }
-#define NOZZLE_TO_PROBE_OFFSET { -15, -45, 0 }
+#define NOZZLE_TO_PROBE_OFFSET { 0, -45, 0 }
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
-#define PROBING_MARGIN 35
+#define PROBING_MARGIN 45
 
 // X and Y axis travel speed (mm/min) between probes
 #define XY_PROBE_SPEED (133*60)//(10*60)
@@ -1112,7 +1112,7 @@
 #define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -5 // Farthest distance below the trigger-point to go before stopping
+#define Z_PROBE_LOW_POINT          -4 // Farthest distance below the trigger-point to go before stopping
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -25
@@ -1204,16 +1204,18 @@
 // @section machine
 
 // The size of the print bed
-#define X_BED_SIZE 230
-#define Y_BED_SIZE 230
+
+//MEASUREMENT OF REACHABLE BED AREA WITH MY V6 MOUNT FITTED
+#define X_BED_SIZE 215  // Y ENDSTOP IS 20MM FROM THE REAR OF THE BED AND NOZZLE CAN GO 17MM IN FRONT OF THE BED = (235 - 20)
+#define Y_BED_SIZE 230   // X ENDSTOP IS -5MM TO LEFT OF BED AND NOZZLE CAN ONLY GO -5MM SHY OF RIGHT EDGE OF BED = (235 - 5)
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
-#define X_MIN_POS -1 //0
-#define Y_MIN_POS 0
-#define Z_MIN_POS 0
+#define X_MIN_POS -6 //0
+#define Y_MIN_POS -20
+#define Z_MIN_POS 2
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS 250
+#define Z_MAX_POS 245
 
 /**
  * Software Endstops
